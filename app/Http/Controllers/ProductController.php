@@ -17,8 +17,8 @@ class ProductController extends Controller
         $product = Product::all();
 
         return response()->json(
-            $data=$product,
-            $status=200
+            $data = $product,
+            $status = 200
         );
     }
 
@@ -44,6 +44,10 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         //
+        return response()->json(
+            $data = $product,
+            $status = 200
+        );
     }
 
     /**
@@ -72,12 +76,15 @@ class ProductController extends Controller
 
     public function getProductBySlug($slug)
     {
-        //
-       $product = (new Product())->getProductBySlug($slug);
+        try {
+            // Attempt to retrieve the product by slug
+            $product = Product::query()->where('slug', $slug)->firstOrFail();
 
-         return response()->json(
-             $data= $product,
-              200);
-
+            // Product found, return a success response
+            return response()->json($product, 200);
+        } catch (\Exception $e) {
+            // Product not found, return an error response
+            return response()->json(['error' => 'Product not found'], 404);
+        }
     }
 }
