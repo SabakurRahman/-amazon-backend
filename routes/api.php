@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
@@ -17,3 +18,14 @@ use App\Http\Controllers\ProductController;
 
 Route::resource('products', ProductController::class);
 Route::get('product/slug/{slug}', [ProductController::class, 'getProductBySlug']);
+
+//Route::middleware('auth:sanctum')->group(function () {
+//    Route::post('/user/signup', [UserController::class, 'signup']);
+//    // Add other authenticated routes here
+//});
+Route::post('/user/signup', [UserController::class, 'signup']);
+
+Route::group(['middleware'=>'auth:sanctum'], static function(){
+
+    // Add other authenticated routes here
+});
