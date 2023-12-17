@@ -14,10 +14,11 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|max:10'
+            'password' => 'required',
+            'confirm_password' => 'required|same:password'
         ]);
 
-        $user = User::create([
+        $user = User::query()->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password)

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,10 +24,11 @@ Route::get('product/slug/{slug}', [ProductController::class, 'getProductBySlug']
 //    Route::post('/user/signup', [UserController::class, 'signup']);
 //    // Add other authenticated routes here
 //});
-Route::post('/user  /signup', [UserController::class, 'signup']);
+Route::post('/user/signup', [UserController::class, 'signup']);
 Route::post('/user/login', [UserController::class, 'login']);
 
 Route::group(['middleware'=>'auth:sanctum'], static function(){
 
     // Add other authenticated routes here
+    Route::post('/order', [OrderController::class, 'placeOrder']);
 });
