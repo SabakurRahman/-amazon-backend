@@ -13,21 +13,22 @@ class OrderController extends Controller
     //
     public function placeOrder(Request $request)
     {
-
-//        dd($request->orderItems);
-
+        $order_address = $request->shippingAddress;
+//        dd($order_address['fullName']);
+//
         try {
             DB::beginTransaction();
             $order_address =OrderAddress::query()->create([
                 'user_id'     => auth()->id(),
-                'name'        => $request->fullName,
-                'address'     => $request->address,
-                'city'        => $request->city,
-                'post_code'   => $request->postalCode,
-                'country'     => $request->country,
+                'name'        => $order_address['fullName'],
+                'address'     => $order_address['address'],
+                'city'        => $order_address['city'],
+                'post_code'   => $order_address['postalCode'],
+                'country'     => $order_address['country'],
             ]);
             $order = Order::query()->create([
                 'user_id'        => auth()->id(),
+                'invoice_no' => 'INV-'.time(), // 'INV-'.time() . '-' . auth()->id(),
                 'order_address'  => $order_address->id,
                 'shipping_price' => $request->shippingPrice,
                 'tax_price'      => $request->taxPrice,
@@ -70,5 +71,14 @@ class OrderController extends Controller
             'order' => $order,
             'message' => 'Order placed successfully'
         ], 201);
+    }
+
+    public function getOrder($order_id)
+    {
+        $order = Order::query()->with('OrderAddress','orderItems')->where('id',$order_id)->first();
+        return response()->json([
+            'order' => $order,
+            'message' => 'Order get successfully'
+        ], 200);
     }
 }
