@@ -81,4 +81,31 @@ class OrderController extends Controller
             'message' => 'Order get successfully'
         ], 200);
     }
+
+    public function updateOrder(Request $request, $order_id)
+    {
+
+        $order = Order::query()->where('id',$order_id)->first();
+        $order->payment_status = 1;
+        $order->paid_at = now();
+        $order->save();
+        return response()->json([
+            'order' => $order,
+            'message' => 'Order updated successfully'
+        ], 200);
+    }
+
+    public function getOrdersByUser()
+    {
+        $orders = Order::with(['OrderAddress', 'orderItems'])
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc') // Assuming 'created_at' is the column representing the order's creation time
+            ->get();
+        return response()->json([
+            'order' => $orders,
+            'message' => 'Order get successfully'
+        ], 200);
+    }
+
+
 }

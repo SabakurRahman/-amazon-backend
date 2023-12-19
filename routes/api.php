@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\SSLCommerzController;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\UserController;
@@ -30,11 +31,17 @@ Route::post('/user/signup', [UserController::class, 'signup']);
 Route::post('/user/login', [UserController::class, 'login']);
 
 
+
 Route::group(['middleware'=>'auth:sanctum'], static function(){
 
     // Add other authenticated routes here
     Route::post('/order', [OrderController::class, 'placeOrder']);
     Route::get('/order/{id}', [OrderController::class, 'getOrder']);
+    Route::get('/key/paypal', [PaymentController::class, 'getSession']);
+    Route::put('/orders/{id}/pay', [OrderController::class, 'updateOrder']);
+    Route::get('user/order/history', [OrderController::class, 'getOrdersByUser']);
+    Route::put('user/profile', [UserController::class, 'updateUserProfile']);
+
 
 
 });

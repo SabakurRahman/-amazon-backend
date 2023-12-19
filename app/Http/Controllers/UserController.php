@@ -55,4 +55,28 @@ class UserController extends Controller
             'token' => $token,
         ], 200);
     }
+
+    public function updateUserProfile(Request $request)
+    {
+        $request->validate([
+            'name' => 'string',
+            'email' => 'email|unique:users,email,' . auth()->id(),
+            'password' => 'string|min:6|confirmed',
+            'password_confirmation' => 'string|min:6|max:10',
+        ]);
+        $user = auth()->user();
+        $data=[
+            'name' => $request->name ?? $user->name,
+            'email' => $request->email ?? $user->email,
+        ];
+        if ($request->password)
+        {
+            $data['password'] = Hash::make($request->password);
+        }
+        $user->update($data);
+        return response()->json([
+            'message' => 'User profile updated successfully',
+            'user' => $user,
+        ], 200);
+    }
 }
